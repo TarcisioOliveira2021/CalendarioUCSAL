@@ -2,16 +2,16 @@
 {
     public class EventoViewModel
     {
-        public string Nome { get; set; }
+        public required string Nome { get; set; }
 
-        public DateTime Data { get; set; }
+        public required DateTime Data { get; set; }
 
-        public string Recorrencia { get; set; }
+        public required string Recorrencia { get; set; }
 
-        public bool EhDiaInteiro { get; set; }
+        public required bool EhDiaInteiro { get; set; }
 
-        public DateTime Inicio { get; set; }
+        public required DateTime Inicio { get; set; }
 
-        public DateTime Fim { get; set; }
+        public required DateTime Fim { get; set; }
     }
 }
