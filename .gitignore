@@ -1,0 +1,7 @@
+Backend/Calendario/Calendario/bin*
+Backend/Calendario/Calendario/obj*
+Backend/Calendario/Calendario.Domain/obj*
+Backend/Calendario/Calendario.Service/obj*
+Backend/Calendario/Calendario.Repository/obj*
+Backend/Calendario/.vs/*
+
