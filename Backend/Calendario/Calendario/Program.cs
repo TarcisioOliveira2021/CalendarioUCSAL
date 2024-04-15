@@ -1,4 +1,6 @@
-using Calendario.Repository.Context;
+using Calendario.Infraestructure;
+using Calendario.Services;
+using Calendario.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,7 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<Contexto>(x => x.UseInMemoryDatabase("CalendarioDB"));
+builder.Services.AddDbContext<AppDbContext>(
+    x => x.UseInMemoryDatabase("CalendarioDB")
+);
+
+builder.Services.AddTransient<IEventoService, EventoService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
