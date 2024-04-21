@@ -9,6 +9,7 @@ using Calendario.Entities;
 using Calendario.Infraestructure;
 using Calendario.Entities.Enums;
 using Calendario.Services.Interface;
+using Calendario.Entities.DTO;
 
 namespace Calendario.Controllers
 {
@@ -29,14 +30,20 @@ namespace Calendario.Controllers
         {
             try
             {
-                _service.SalvarEvento(evento);
+                _service.VerificarRecorrenciaEvento(evento);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex);
             }
 
             return Ok();
+        }
+
+        [HttpGet]
+        public ActionResult<List<EventoDTO>> GetEvento()
+        {
+            return _service.ObterTodos();
         }
 
 

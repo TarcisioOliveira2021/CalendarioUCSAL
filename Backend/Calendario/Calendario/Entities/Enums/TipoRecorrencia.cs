@@ -1,4 +1,6 @@
-﻿namespace Calendario.Entities.Enums
+﻿using System.ComponentModel;
+
+namespace Calendario.Entities.Enums
 {
     public enum TipoRecorrencia
     {

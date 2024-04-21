@@ -2,12 +2,13 @@ using Calendario.Infraestructure;
 using Calendario.Services;
 using Calendario.Services.Interface;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddDbContext<AppDbContext>(
     x => x.UseInMemoryDatabase("CalendarioDB")
 );
