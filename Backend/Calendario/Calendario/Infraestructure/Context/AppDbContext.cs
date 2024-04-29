@@ -1,7 +1,7 @@
 ﻿using Calendario.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Calendario.Infraestructure
+namespace Calendario.Infraestructure.Context
 {
     public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {

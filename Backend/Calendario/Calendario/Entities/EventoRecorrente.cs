@@ -8,9 +8,9 @@ namespace Calendario.Entities
     public class EventoRecorrente
     {
         [Key]
-        public long Id;
+        public long Id { get; }
 
-        public long IdPai;
+        public long IdPai { get; }
         public Evento Evento { get; set; }
 
         public DateTime? HoraInicial { get; set; }
@@ -31,8 +31,8 @@ namespace Calendario.Entities
             this.HoraInicial = evento.HoraInicial;
             this.HoraFinal = evento.HoraFinal;
             this.Data = evento.Data;
-            this.Evento = evento;
             this.IdPai = evento.Id;
+            this.Evento = evento;
         }
     }
 }

@@ -30,11 +30,11 @@ namespace Calendario.Controllers
         {
             try
             {
-                _service.VerificarRecorrenciaEvento(evento);
+                _service.SalvarEvento(evento);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
 
             return Ok();
@@ -47,7 +47,20 @@ namespace Calendario.Controllers
         }
 
 
-        //[HttpDelete("{id}")]
+        [HttpDelete("{id},{data}")]
+        public IActionResult DeletarEvento()
+        {
+            try
+            {
+                
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            return Ok();
+        }
         //public async Task<IActionResult> DeleteEvento(int id)
         //{
         //    var evento = await _context.Eventos.FindAsync(id);

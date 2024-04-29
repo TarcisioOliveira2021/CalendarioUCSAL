@@ -1,84 +1,139 @@
 ﻿using Calendario.Entities;
 using Calendario.Entities.DTO;
-using Calendario.Infraestructure;
+using Calendario.Infraestructure.Context;
+using Calendario.Infraestructure.Interface;
+using Calendario.Infraestructure.UnitOfWork.Interface;
 using Calendario.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace Calendario.Services
 {
-    public class EventoService(AppDbContext context) : IEventoService
+    public class EventoService : IEventoService
     {
-        private readonly AppDbContext _context = context;
-        private readonly DateTime fimDoAno = new DateTime(DateTime.Now.Year, 12, 23);
-        private readonly DateTime segunda = new DateTime(DateTime.Now.Year, 04, 22);
+        private DateTime fimDoSemestre;
+        private DateTime dataAtual = DateTime.Now.Date;
+        private readonly IEventoRepository eventoRepository;
+        private readonly IEventoRecorrenteRepository eventoRecorrenteRepository;
+        private readonly IUnitOfWork unidadeDeTrabalho;
 
-        public void VerificarRecorrenciaEvento(Evento evento)
+        public EventoService(IEventoRepository _eventoRepository, IEventoRecorrenteRepository _eventoRecorrenteRepository, IUnitOfWork _unidadeDeTrabalho)
+        {
+            this.eventoRepository = _eventoRepository;
+            this.eventoRecorrenteRepository = _eventoRecorrenteRepository;
+            this.unidadeDeTrabalho = _unidadeDeTrabalho;
+        }
+
+
+        public void SalvarEvento(Evento evento)
         {
             try
             {
-                DateTime dataAtual = DateTime.Now.Date;
+                DefinirDataFinalSemestre();
+                ValidarDiaInteiro(evento);
+                ValidarRecorrencia(evento);
 
-                switch (evento.Recorrencia)
-                {
-                    case Entities.Enums.TipoRecorrencia.DIARIAMENTE:
-                        SalvarEventoDiariamente(evento, dataAtual);
-                        break;
-
-                    case Entities.Enums.TipoRecorrencia.SEMANALMENTE:
-                        break;
-
-                    case Entities.Enums.TipoRecorrencia.ANUALMENTE:
-                        break;
-
-                    case Entities.Enums.TipoRecorrencia.NENHUMA:
-                        SalvarEventoSemRecorrencia(evento);
-                        break;
-                }
-
-                _context.SaveChanges();
+                unidadeDeTrabalho.SaveChanges();
             }
             catch (Exception)
             {
                 throw;
             }
         }
-
-        private void SalvarEventoSemRecorrencia(Evento evento)
+        private void DefinirDataFinalSemestre()
         {
-            _context.Eventos.Add(evento);
+            fimDoSemestre = dataAtual.Month <= 6 ? fimDoSemestre = new DateTime(DateTime.Now.Year, 06, 25) : fimDoSemestre = new DateTime(DateTime.Now.Year, 11, 25);
         }
 
-        private void SalvarEventoDiariamente(Evento evento, DateTime dataAtual)
+        private void ValidarDiaInteiro(Evento evento)
         {
-            if (dataAtual > segunda)
+            if (!evento.EhDiaInteiro && (evento.HoraInicial == null || evento.HoraFinal == null))
+                throw new Exception("Evento sem informações de hora inicial e hora final.");
+
+            if (evento.EhDiaInteiro && (evento.HoraInicial.HasValue || evento.HoraFinal.HasValue))
+                throw new Exception("Evento dia de dia inteiro não deve ter hora inicial nem hora Final.");
+        }
+
+        private void ValidarRecorrencia(Evento evento)
+        {
+            switch (evento.Recorrencia)
+            {
+                case Entities.Enums.TipoRecorrencia.DIARIAMENTE:
+                    SalvarEventoDiariamente(evento, dataAtual);
+                    break;
+
+                case Entities.Enums.TipoRecorrencia.SEMANALMENTE:
+                    SalvarEventoSemanalmente(evento, dataAtual);
+                    break;
+
+                case Entities.Enums.TipoRecorrencia.MENSALMENTE:
+                    SalvaEventoMensalmente(evento, dataAtual);
+                    break;
+
+                case Entities.Enums.TipoRecorrencia.NENHUMA:
+                    SalvarEventoSemRecorrencia(evento);
+                    break;
+            }
+        }
+
+
+        private void SalvarEventoSemanalmente(Evento evento, DateTime dataAtual)
+        {
+            if (evento.Data.Date == dataAtual)
+                dataAtual = dataAtual.AddDays(7);
+
+            if (dataAtual > fimDoSemestre)
                 return;
 
             EventoRecorrente eventoRecorrente = new EventoRecorrente(evento);
             eventoRecorrente.Data = dataAtual;
 
-            _context.EventoRecorrentes.Add(eventoRecorrente);
+            eventoRecorrenteRepository.Salvar(eventoRecorrente);
+            SalvarEventoSemanalmente(evento, dataAtual.AddDays(7));
+        }
+
+        private void SalvaEventoMensalmente(Evento evento, DateTime dataAtual)
+        {
+            if (evento.Data.Date == dataAtual)
+                dataAtual = dataAtual.AddMonths(1);
+
+            if (dataAtual > fimDoSemestre)
+                return;
+
+            EventoRecorrente eventoRecorrente = new EventoRecorrente(evento);
+            eventoRecorrente.Data = dataAtual;
+
+            eventoRecorrenteRepository.Salvar(eventoRecorrente);
+            SalvaEventoMensalmente(evento, dataAtual.AddMonths(1));
+        }
+
+        private void SalvarEventoSemRecorrencia(Evento evento)
+        {
+            eventoRepository.Salvar(evento);
+        }
+
+        private void SalvarEventoDiariamente(Evento evento, DateTime dataAtual)
+        {
+            if(evento.Data.Date == dataAtual)
+                dataAtual = dataAtual.AddDays(1);
+
+            if (dataAtual > fimDoSemestre)
+                return;
+
+            EventoRecorrente eventoRecorrente = new EventoRecorrente(evento);
+            eventoRecorrente.Data = dataAtual;
+            eventoRecorrenteRepository.Salvar(eventoRecorrente);
+
             SalvarEventoDiariamente(evento, dataAtual.AddDays(1));
         }
 
         public List<EventoDTO> ObterTodos()
         {
-            var eventosDTO = _context.Eventos
-                .Include(e => e.EventoRecorrentes)
-                .Select(evento => new EventoDTO
-                {
-                    Id = evento.Id,
-                    Nome = evento.Nome,
-                    HoraInicial = evento.EventoRecorrentes.Any() ? evento.EventoRecorrentes.FirstOrDefault().HoraInicial : null,
-                    HoraFinal = evento.EventoRecorrentes.Any() ? evento.EventoRecorrentes.FirstOrDefault().HoraFinal : null,
-                    EhDiaInteiro = evento.EhDiaInteiro,
-                    Data = evento.EventoRecorrentes.Any() ? evento.EventoRecorrentes.FirstOrDefault().Data : evento.Data,
-                    EventosRecorrentes = evento.EventoRecorrentes.ToList()
-                })
-                .ToList();
-
-            return eventosDTO;
+            return eventoRepository.ObterTodos();
         }
 
-
+        public void DeletarEvento(long id)
+        {
+            
+        }
     }
 }

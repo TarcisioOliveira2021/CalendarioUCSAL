@@ -1,4 +1,4 @@
-using Calendario.Infraestructure;
+using Calendario.Infraestructure.Context;
 using Calendario.Services;
 using Calendario.Services.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +13,8 @@ builder.Services.AddDbContext<AppDbContext>(
     x => x.UseInMemoryDatabase("CalendarioDB")
 );
 
-builder.Services.AddTransient<IEventoService, EventoService>();
+builder.Services.AddSingleton<IEventoService, EventoService>();
+//builder.Services.AddTransient<IEventoService, EventoService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
