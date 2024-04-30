@@ -47,15 +47,18 @@ namespace Calendario.Controllers
         }
 
 
-        [HttpDelete("{id},{data}")]
-        public IActionResult DeletarEvento()
+        [HttpDelete("{id}&{data}")]
+        public IActionResult DeletarEvento([FromRoute] string id, [FromRoute] string data)
         {
             try
             {
-                
+                _service.DeletarEvento(id, data);
             }
             catch (Exception ex)
             {
+                if(ex.Message == "Evento não encontrado")
+                    return NotFound(ex.Message);
+
                 return BadRequest(ex.Message);
             }
 

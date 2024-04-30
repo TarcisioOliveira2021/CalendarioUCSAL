@@ -6,7 +6,7 @@ namespace Calendario.Services.Interface
     public interface IEventoService
     {
         void SalvarEvento(Evento evento);
-        void DeletarEvento(long id);
+        void DeletarEvento(string id, string data);
         List<EventoDTO> ObterTodos();
     }
 }

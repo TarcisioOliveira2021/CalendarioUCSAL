@@ -26,18 +26,11 @@ namespace Calendario.Services
 
         public void SalvarEvento(Evento evento)
         {
-            try
-            {
-                DefinirDataFinalSemestre();
-                ValidarDiaInteiro(evento);
-                ValidarRecorrencia(evento);
+            DefinirDataFinalSemestre();
+            ValidarDiaInteiro(evento);
+            ValidarRecorrencia(evento);
 
-                unidadeDeTrabalho.SaveChanges();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            unidadeDeTrabalho.SaveChanges();
         }
         private void DefinirDataFinalSemestre()
         {
@@ -113,7 +106,7 @@ namespace Calendario.Services
 
         private void SalvarEventoDiariamente(Evento evento, DateTime dataAtual)
         {
-            if(evento.Data.Date == dataAtual)
+            if (evento.Data.Date == dataAtual)
                 dataAtual = dataAtual.AddDays(1);
 
             if (dataAtual > fimDoSemestre)
@@ -131,9 +124,24 @@ namespace Calendario.Services
             return eventoRepository.ObterTodos();
         }
 
-        public void DeletarEvento(long id)
+        public void DeletarEvento(string idRoute, string dataRoute)
         {
-            
+            var id = long.Parse(idRoute);
+            var data = DateTime.Parse(dataRoute);
+
+            Evento? eventoEncontrado = eventoRepository.ObterTodosEntidade().Where(evento => evento.Id == id && evento.Data.Date.Equals(data.Date)).FirstOrDefault();
+            EventoRecorrente? eventoRecorrenteEncontrado = eventoRepository.ObterTodosEntidade().SelectMany(evt => evt.EventoRecorrentes).Where(err => err.Id == id && err.Data.Date.Equals(data.Date)).FirstOrDefault();
+
+            if (eventoEncontrado == null && eventoRecorrenteEncontrado == null)
+                throw new Exception("Elemento não encontrado");
+
+            if (eventoEncontrado != null)
+                eventoRepository.DeletarEvento(eventoEncontrado);
+
+            if (eventoRecorrenteEncontrado != null)
+                eventoRecorrenteRepository.DeletarEvento(eventoRecorrenteEncontrado);
+
+            unidadeDeTrabalho.SaveChanges();
         }
     }
 }

@@ -8,6 +8,11 @@ namespace Calendario.Infraestructure
     {
         private readonly AppDbContext _context = context;
 
+        public void DeletarEvento(EventoRecorrente eventoRecorrenteEncontrado)
+        {
+            _context.EventoRecorrentes.Remove(eventoRecorrenteEncontrado);
+        }
+
         public void Salvar(EventoRecorrente evento)
         {
             _context.EventoRecorrentes.Add(evento);

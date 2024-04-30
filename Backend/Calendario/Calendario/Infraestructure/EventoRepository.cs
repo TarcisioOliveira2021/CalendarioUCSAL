@@ -10,6 +10,11 @@ namespace Calendario.Infraestructure
     {
         private readonly AppDbContext _context = context;
 
+        public void DeletarEvento(Evento evento)
+        {
+            _context.Eventos.Remove(evento);
+        }
+
         public List<EventoDTO> ObterTodos()
         {
             return _context.Eventos
@@ -22,8 +27,22 @@ namespace Calendario.Infraestructure
                      HoraFinal = evento.HoraFinal,
                      EhDiaInteiro = evento.EhDiaInteiro,
                      Data = evento.Data,
-                     EventosRecorrentes = evento.EventoRecorrentes.ToList()
+
+                     EventosRecorrentes = evento.EventoRecorrentes.Select(er => new EventoRecorrenteDTO
+                     {
+                         Id = er.Id,
+                         IdPai = er.IdPai,
+                         HoraInicial = er.HoraInicial,
+                         HoraFinal = er.HoraFinal,
+                         Data = er.Data
+                     }).ToList()
+
                  }).ToList();
+        }
+
+        public List<Evento> ObterTodosEntidade()
+        {
+            return _context.Eventos.Include(e => e.EventoRecorrentes).ToList();
         }
 
         public void Salvar(Evento evento)
