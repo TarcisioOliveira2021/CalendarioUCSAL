@@ -5,6 +5,7 @@ using Calendario.Infraestructure.Interface;
 using Calendario.Infraestructure.UnitOfWork.Interface;
 using Calendario.Services.Interface;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Calendario.Services
 {
@@ -126,22 +127,54 @@ namespace Calendario.Services
 
         public void DeletarEvento(string idRoute, string dataRoute)
         {
-            var id = long.Parse(idRoute);
-            var data = DateTime.Parse(dataRoute);
+            //var id = long.Parse(idRoute);
+            //var data = DateTime.Parse(dataRoute);
 
-            Evento? eventoEncontrado = eventoRepository.ObterTodosEntidade().Where(evento => evento.Id == id && evento.Data.Date.Equals(data.Date)).FirstOrDefault();
-            EventoRecorrente? eventoRecorrenteEncontrado = eventoRepository.ObterTodosEntidade().SelectMany(evt => evt.EventoRecorrentes).Where(err => err.Id == id && err.Data.Date.Equals(data.Date)).FirstOrDefault();
+            //Evento? eventoEncontrado = eventoRepository.ObterTodosEntidade().Where(evento => evento.Id == id && evento.Data.Date.Equals(data.Date)).FirstOrDefault();
+            //EventoRecorrente? eventoRecorrenteEncontrado = eventoRepository.ObterTodosEntidade().SelectMany(evt => evt.EventoRecorrentes).Where(err => err.Id == id && err.Data.Date.Equals(data.Date)).FirstOrDefault();
 
-            if (eventoEncontrado == null && eventoRecorrenteEncontrado == null)
-                throw new Exception("Elemento não encontrado");
+            //if (eventoEncontrado == null && eventoRecorrenteEncontrado == null)
+            //    throw new Exception("Evento ou evento recorrente não encontrado");
 
-            if (eventoEncontrado != null)
+            //if (eventoEncontrado != null)
+            //    eventoRepository.DeletarEvento(eventoEncontrado);
+
+            //if (eventoRecorrenteEncontrado != null)
+            //    eventoRecorrenteRepository.DeletarEvento(eventoRecorrenteEncontrado);
+
+            //unidadeDeTrabalho.SaveChanges();
+
+            DeletarEventoRecursivo(long.Parse(idRoute), DateTime.Parse(dataRoute));
+        }
+
+
+        private void DeletarEventoRecursivo(long id, DateTime data)
+        {
+            Evento? eventoEncontrado = eventoRepository.ObterTodosEntidade().FirstOrDefault(evento => evento.Id == id && evento.Data.Date.Equals(data.Date));
+            if (eventoEncontrado == null)
+            {
+
+                EventoRecorrente? eventoRecorrenteEncontrado = eventoRepository.ObterTodosEntidade()
+                    .SelectMany(evt => evt.EventoRecorrentes)
+                    .FirstOrDefault(err => err.Id == id && err.Data.Date.Equals(data.Date));
+
+                if (eventoRecorrenteEncontrado == null)
+                    throw new Exception("Evento ou evento recorrente não encontrado");
+
+                eventoRecorrenteRepository.DeletarEvento(eventoRecorrenteEncontrado);
+            }
+            else
+            {
                 eventoRepository.DeletarEvento(eventoEncontrado);
 
-            if (eventoRecorrenteEncontrado != null)
-                eventoRecorrenteRepository.DeletarEvento(eventoRecorrenteEncontrado);
+                foreach (var eventoRecorrente in eventoEncontrado.EventoRecorrentes.ToList())
+                {
+                    DeletarEventoRecursivo(eventoRecorrente.Id, eventoRecorrente.Data);
+                }
+            }
 
             unidadeDeTrabalho.SaveChanges();
         }
+
     }
 }
