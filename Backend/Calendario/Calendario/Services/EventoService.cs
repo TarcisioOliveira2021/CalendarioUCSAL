@@ -127,23 +127,6 @@ namespace Calendario.Services
 
         public void DeletarEvento(string idRoute, string dataRoute)
         {
-            //var id = long.Parse(idRoute);
-            //var data = DateTime.Parse(dataRoute);
-
-            //Evento? eventoEncontrado = eventoRepository.ObterTodosEntidade().Where(evento => evento.Id == id && evento.Data.Date.Equals(data.Date)).FirstOrDefault();
-            //EventoRecorrente? eventoRecorrenteEncontrado = eventoRepository.ObterTodosEntidade().SelectMany(evt => evt.EventoRecorrentes).Where(err => err.Id == id && err.Data.Date.Equals(data.Date)).FirstOrDefault();
-
-            //if (eventoEncontrado == null && eventoRecorrenteEncontrado == null)
-            //    throw new Exception("Evento ou evento recorrente não encontrado");
-
-            //if (eventoEncontrado != null)
-            //    eventoRepository.DeletarEvento(eventoEncontrado);
-
-            //if (eventoRecorrenteEncontrado != null)
-            //    eventoRecorrenteRepository.DeletarEvento(eventoRecorrenteEncontrado);
-
-            //unidadeDeTrabalho.SaveChanges();
-
             DeletarEventoRecursivo(long.Parse(idRoute), DateTime.Parse(dataRoute));
         }
 
