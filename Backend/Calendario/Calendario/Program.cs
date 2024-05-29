@@ -37,7 +37,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//using (var scope = app.Services.CreateScope())
+//{
+//    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+//    dbContext.Eventos.Add(
+//        new Calendario.Entities.Evento
+//        {
+//            Nome = ""
+//        }
+//    );
+//}
+
+
+    app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
