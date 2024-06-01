@@ -64,18 +64,5 @@ namespace Calendario.Controllers
 
             return Ok();
         }
-        //public async Task<IActionResult> DeleteEvento(int id)
-        //{
-        //    var evento = await _context.Eventos.FindAsync(id);
-        //    if (evento == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    _context.Eventos.Remove(evento);
-        //    await _context.SaveChangesAsync();
-
-        //    return NoContent();
-        //}
     }
 }

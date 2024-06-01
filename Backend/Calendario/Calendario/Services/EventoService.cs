@@ -148,12 +148,12 @@ namespace Calendario.Services
             }
             else
             {
-                eventoRepository.DeletarEvento(eventoEncontrado);
-
                 foreach (var eventoRecorrente in eventoEncontrado.EventoRecorrentes.ToList())
                 {
                     DeletarEventoRecursivo(eventoRecorrente.Id, eventoRecorrente.Data);
                 }
+
+                eventoRepository.DeletarEvento(eventoEncontrado);
             }
 
             unidadeDeTrabalho.SaveChanges();

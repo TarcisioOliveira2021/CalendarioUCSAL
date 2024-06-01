@@ -12,10 +12,12 @@ namespace Calendario.Infraestructure.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Evento>()
-                .HasKey(e => e.Id);
+                .HasKey(e => e.Id);            
+            
             modelBuilder.Entity<Evento>()
                 .HasIndex(e => e.Id)
                 .IsUnique();
+
             modelBuilder.Entity<Evento>()
                 .HasMany(e => e.EventoRecorrentes)
                 .WithOne(er => er.Evento)

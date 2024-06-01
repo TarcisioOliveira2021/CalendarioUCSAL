@@ -27,6 +27,7 @@ namespace Calendario.Infraestructure
                      HoraFinal = evento.HoraFinal,
                      EhDiaInteiro = evento.EhDiaInteiro,
                      Data = evento.Data,
+                     TipoRecorrencia = evento.Recorrencia.ToString(),
 
                      EventosRecorrentes = evento.EventoRecorrentes.Select(er => new EventoRecorrenteDTO
                      {

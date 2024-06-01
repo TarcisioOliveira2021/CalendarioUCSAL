@@ -10,7 +10,6 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
 builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddDbContext<AppDbContext>(
@@ -30,8 +29,6 @@ builder.Services.AddTransient<IEventoService, EventoService>();
 builder.Services.AddTransient<IEventoRecorrenteRepository, EventoRecorrenteRepository>();
 builder.Services.AddTransient<IEventoRepository, EventoRepository>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-
-//builder.Services.AddTransient<IEventoService, EventoService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -39,7 +36,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
