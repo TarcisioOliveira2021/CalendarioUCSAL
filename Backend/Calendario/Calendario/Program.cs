@@ -17,6 +17,15 @@ builder.Services.AddDbContext<AppDbContext>(
     x => x.UseInMemoryDatabase("CalendarioDB")
 );
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder => builder
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
+
 builder.Services.AddTransient<IEventoService, EventoService>();
 builder.Services.AddTransient<IEventoRecorrenteRepository, EventoRecorrenteRepository>();
 builder.Services.AddTransient<IEventoRepository, EventoRepository>();
@@ -49,8 +58,9 @@ if (app.Environment.IsDevelopment())
 //    );
 //}
 
+app.UseCors("AllowAll");
 
-    app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
