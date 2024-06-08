@@ -24,26 +24,31 @@ namespace Calendario.Services
             this.unidadeDeTrabalho = _unidadeDeTrabalho;
         }
 
-
         public void SalvarEvento(Evento evento)
         {
             DefinirDataFinalSemestre();
-            ValidarDiaInteiro(evento);
-            ValidarRecorrencia(evento);
+            Validacoes(evento);
 
             unidadeDeTrabalho.SaveChanges();
         }
+
+        private void Validacoes(Evento evento)
+        {
+            ValidarDiaInteiro(evento);
+            ValidarRecorrencia(evento);
+        }
+
         private void DefinirDataFinalSemestre()
         {
-            fimDoSemestre = dataAtual.Month <= 6 ? fimDoSemestre = new DateTime(DateTime.Now.Year, 06, 25) : fimDoSemestre = new DateTime(DateTime.Now.Year, 11, 25);
+            fimDoSemestre = dataAtual.Month < 6 ? fimDoSemestre = new DateTime(DateTime.Now.Year, 06, 25) : fimDoSemestre = new DateTime(DateTime.Now.Year, 11, 25);
         }
 
         private void ValidarDiaInteiro(Evento evento)
         {
-            if (!evento.EhDiaInteiro && (evento.HoraInicial == null || evento.HoraFinal == null))
+            if (!evento.EhDiaInteiro && (string.IsNullOrEmpty(evento.HoraInicial) || string.IsNullOrEmpty(evento.HoraFinal)))
                 throw new Exception("Evento sem informações de hora inicial e hora final.");
 
-            if (evento.EhDiaInteiro && (evento.HoraInicial.HasValue || evento.HoraFinal.HasValue))
+            if (evento.EhDiaInteiro && (!string.IsNullOrEmpty(evento.HoraInicial) || !string.IsNullOrEmpty(evento.HoraFinal)))
                 throw new Exception("Evento dia de dia inteiro não deve ter hora inicial nem hora Final.");
         }
 

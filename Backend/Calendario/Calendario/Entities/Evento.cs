@@ -13,9 +13,9 @@ namespace Calendario.Entities
 
         public TipoRecorrencia Recorrencia { get; set; }
 
-        public DateTime? HoraInicial { get; set; }
+        public string? HoraInicial { get; set; }
 
-        public DateTime? HoraFinal { get; set; }
+        public string? HoraFinal { get; set; }
 
         public bool EhDiaInteiro { get; set; }
 

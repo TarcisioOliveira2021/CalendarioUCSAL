@@ -13,9 +13,9 @@ namespace Calendario.Entities
         public long IdPai { get; }
         public Evento Evento { get; set; }
 
-        public DateTime? HoraInicial { get; set; }
+        public string? HoraInicial { get; set; }
 
-        public DateTime? HoraFinal { get; set; }
+        public string? HoraFinal { get; set; }
 
         public DateTime Data { get; set; }
 

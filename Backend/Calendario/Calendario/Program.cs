@@ -42,17 +42,52 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//using (var scope = app.Services.CreateScope())
-//{
-//    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-//    dbContext.Eventos.Add(
-//        new Calendario.Entities.Evento
-//        {
-//            Nome = ""
-//        }
-//    );
-//}
+    dbContext.Eventos.Add(
+        new Calendario.Entities.Evento
+        {
+            Nome = "26ª Semana de Mobilização Científica - SEMOC",
+            Data = DateTime.Parse("23/10/2024"),
+            HoraInicial = "10:00",
+            HoraFinal = "12:00",
+            EhDiaInteiro = false,
+            Recorrencia = Calendario.Entities.Enums.TipoRecorrencia.DIARIAMENTE,
+            EventoRecorrentes = new List<Calendario.Entities.EventoRecorrente>()
+            {
+                new Calendario.Entities.EventoRecorrente
+                {
+                    HoraInicial = "10:00",
+                    HoraFinal = "12:00",
+                    Data = DateTime.Parse("24/10/2024")
+                },
+                new Calendario.Entities.EventoRecorrente
+                {
+                    HoraInicial = "10:00",
+                    HoraFinal = "12:00",
+                    Data = DateTime.Parse("25/10/2024")
+                },
+                new Calendario.Entities.EventoRecorrente
+                {
+                    HoraInicial = "10:00",
+                    HoraFinal = "12:00",
+                    Data = DateTime.Parse("26/10/2024")
+                },
+                new Calendario.Entities.EventoRecorrente
+                {
+                    HoraInicial = "10:00",
+                    HoraFinal = "12:00",
+                    Data = DateTime.Parse("27/10/2024")
+                }
+            }
+        }
+    );
+
+
+    dbContext.SaveChanges();
+}
 
 app.UseCors("AllowAll");
 
