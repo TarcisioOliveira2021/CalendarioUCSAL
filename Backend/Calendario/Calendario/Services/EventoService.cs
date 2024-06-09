@@ -68,12 +68,30 @@ namespace Calendario.Services
                     SalvaEventoMensalmente(evento, dataAtual);
                     break;
 
-                case Entities.Enums.TipoRecorrencia.NENHUMA:
+                case Entities.Enums.TipoRecorrencia.ANUALMENTE:
+                    SalvarEventoAnualmente(evento, dataAtual);
+                    break;
+
+                default:
                     SalvarEventoSemRecorrencia(evento);
                     break;
             }
         }
 
+        private void SalvarEventoAnualmente(Evento evento, DateTime dataAtual)
+        {
+            if (evento.Data.Date == dataAtual)
+                dataAtual = dataAtual.AddYears(1);
+
+            if (dataAtual.Year > 2027)
+                return;
+
+            EventoRecorrente eventoRecorrente = new EventoRecorrente(evento);
+            eventoRecorrente.Data = dataAtual;
+
+            eventoRecorrenteRepository.Salvar(eventoRecorrente);
+            SalvarEventoAnualmente(evento, dataAtual.AddYears(1));
+        }
 
         private void SalvarEventoSemanalmente(Evento evento, DateTime dataAtual)
         {

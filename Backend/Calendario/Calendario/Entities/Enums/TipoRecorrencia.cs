@@ -7,6 +7,7 @@ namespace Calendario.Entities.Enums
         NENHUMA = 0,
         DIARIAMENTE = 1,
         SEMANALMENTE = 2,
-        MENSALMENTE = 3
+        MENSALMENTE = 3,
+        ANUALMENTE = 4
     }
 }
