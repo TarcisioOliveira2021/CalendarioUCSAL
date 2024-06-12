@@ -41,9 +41,57 @@ namespace Calendario.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<EventoDTO>> GetEvento()
+        public ActionResult<List<EventoDTO>> GetEventos()
         {
             return _service.ObterTodos();
+        }
+
+        [HttpGet("eventos-achatados")]
+        public ActionResult<List<EventoAchatadoDTO>> GetEventoAchatados()
+        {
+            var eventos = _service.ObterTodos();
+            var eventosAchatados = new List<EventoAchatadoDTO>();
+
+            foreach (var evento in eventos)
+            {
+                var eventoAchatado = new EventoAchatadoDTO
+                {
+                    Id = evento.Id,
+                    Nome = evento.Nome,
+                    EhDiaInteiro = evento.EhDiaInteiro,
+                    HoraInicial = evento.HoraInicial,
+                    HoraFinal = evento.HoraFinal,
+                    Data = evento.Data,
+                    TipoRecorrencia = evento.TipoRecorrencia,
+                    IsEventoRecorrente = false,
+                    IdPai = null
+                };
+
+                eventosAchatados.Add(eventoAchatado);
+
+                if (evento.EventosRecorrentes != null)
+                {
+                    foreach (var eventoRecorrente in evento.EventosRecorrentes)
+                    {
+                        var eventoRecorrenteAchatado = new EventoAchatadoDTO
+                        {
+                            Id = eventoRecorrente.Id,
+                            Nome = evento.Nome,
+                            EhDiaInteiro = evento.EhDiaInteiro,
+                            HoraInicial = eventoRecorrente.HoraInicial,
+                            HoraFinal = eventoRecorrente.HoraFinal,
+                            Data = eventoRecorrente.Data,
+                            TipoRecorrencia = evento.TipoRecorrencia,
+                            IsEventoRecorrente = true,
+                            IdPai = evento.Id
+                        };
+
+                        eventosAchatados.Add(eventoRecorrenteAchatado);
+                    }
+                }
+            }
+
+            return eventosAchatados;
         }
 
 
