@@ -7,6 +7,7 @@ namespace Calendario.Services.Interface
     {
         void SalvarEvento(Evento evento);
         void DeletarEvento(string id, string data);
-        List<EventoDTO> ObterTodos();
+        List<EventoAchatadoDTO> ObterTodosAchatado();
+        List<EventoDTO> ObterTodosEventos();
     }
 }

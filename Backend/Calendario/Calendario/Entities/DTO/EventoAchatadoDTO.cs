@@ -1,6 +1,6 @@
 ﻿namespace Calendario.Entities.DTO
 {
-    public class EventoAchatadoDTO
+    public struct EventoAchatadoDTO
     {
         public long Id { get; set; }
         public string Nome { get; set; }

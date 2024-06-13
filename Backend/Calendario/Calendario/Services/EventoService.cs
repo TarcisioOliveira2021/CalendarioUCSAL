@@ -143,24 +143,65 @@ namespace Calendario.Services
             SalvarEventoDiariamente(evento, dataAtual.AddDays(1));
         }
 
-        public List<EventoDTO> ObterTodos()
+        public List<EventoAchatadoDTO> ObterTodosAchatado()
         {
-            return eventoRepository.ObterTodos();
-        }
 
+            var eventos = eventoRepository.ObterTodosEventosComRecorrencia();
+            var eventosAchatados = new List<EventoAchatadoDTO>();
+
+            foreach (var evento in eventos)
+            {
+                var eventoAchatado = new EventoAchatadoDTO
+                {
+                    Id = evento.Id,
+                    Nome = evento.Nome,
+                    EhDiaInteiro = evento.EhDiaInteiro,
+                    HoraInicial = evento.HoraInicial,
+                    HoraFinal = evento.HoraFinal,
+                    Data = evento.Data,
+                    TipoRecorrencia = evento.Recorrencia.ToString(),
+                    IsEventoRecorrente = false,
+                    IdPai = null
+                };
+
+                eventosAchatados.Add(eventoAchatado);
+
+                if (evento.EventoRecorrentes != null)
+                {
+                    foreach (var eventoRecorrente in evento.EventoRecorrentes)
+                    {
+                        var eventoRecorrenteAchatado = new EventoAchatadoDTO
+                        {
+                            Id = eventoRecorrente.Id,
+                            Nome = evento.Nome,
+                            EhDiaInteiro = evento.EhDiaInteiro,
+                            HoraInicial = eventoRecorrente.HoraInicial,
+                            HoraFinal = eventoRecorrente.HoraFinal,
+                            Data = eventoRecorrente.Data,
+                            TipoRecorrencia = evento.Recorrencia.ToString(),
+                            IsEventoRecorrente = true,
+                            IdPai = evento.Id
+                        };
+
+                        eventosAchatados.Add(eventoRecorrenteAchatado);
+                    }
+                }
+            }
+
+            return eventosAchatados;
+        }
         public void DeletarEvento(string idRoute, string dataRoute)
         {
             DeletarEventoRecursivo(long.Parse(idRoute), DateTime.Parse(dataRoute));
         }
 
-
         private void DeletarEventoRecursivo(long id, DateTime data)
         {
-            Evento? eventoEncontrado = eventoRepository.ObterTodosEntidade().FirstOrDefault(evento => evento.Id == id && evento.Data.Date.Equals(data.Date));
+            Evento? eventoEncontrado = eventoRepository.ObterTodosEventosComRecorrencia().FirstOrDefault(evento => evento.Id == id && evento.Data.Date.Equals(data.Date));
             if (eventoEncontrado == null)
             {
 
-                EventoRecorrente? eventoRecorrenteEncontrado = eventoRepository.ObterTodosEntidade()
+                EventoRecorrente? eventoRecorrenteEncontrado = eventoRepository.ObterTodosEventosComRecorrencia()
                     .SelectMany(evt => evt.EventoRecorrentes)
                     .FirstOrDefault(err => err.Id == id && err.Data.Date.Equals(data.Date));
 
@@ -182,5 +223,19 @@ namespace Calendario.Services
             unidadeDeTrabalho.SaveChanges();
         }
 
+        public List<EventoDTO> ObterTodosEventos()
+        {
+            return eventoRepository.ObterTodosEventos()
+                     .Select(evento => new EventoDTO
+                     {
+                         Id = evento.Id,
+                         Nome = evento.Nome,
+                         HoraInicial = evento.HoraInicial,
+                         HoraFinal = evento.HoraFinal,
+                         EhDiaInteiro = evento.EhDiaInteiro,
+                         Data = evento.Data,
+                         TipoRecorrencia = evento.Recorrencia.ToString()
+                     }).ToList();
+        }
     }
 }

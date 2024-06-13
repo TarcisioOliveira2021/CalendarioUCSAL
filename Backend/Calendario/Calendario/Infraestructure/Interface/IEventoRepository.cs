@@ -7,9 +7,9 @@ namespace Calendario.Infraestructure.Interface
     {
         void Salvar(Evento evento);
 
-        List<EventoDTO> ObterTodos();
+        List<Evento> ObterTodosEventos();
 
-        List<Evento> ObterTodosEntidade();
+        List<Evento> ObterTodosEventosComRecorrencia();
 
         void DeletarEvento(Evento evento);
     }

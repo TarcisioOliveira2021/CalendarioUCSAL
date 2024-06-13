@@ -10,7 +10,5 @@
         public DateTime Data { get; set; }
 
         public string TipoRecorrencia { get; set; }
-
-        public List<EventoRecorrenteDTO>? EventosRecorrentes { get; set; }
     }
 }

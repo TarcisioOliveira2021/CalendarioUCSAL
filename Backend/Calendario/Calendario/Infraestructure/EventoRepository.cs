@@ -15,35 +15,14 @@ namespace Calendario.Infraestructure
             _context.Eventos.Remove(evento);
         }
 
-        public List<EventoDTO> ObterTodos()
+        public List<Evento> ObterTodosEventos()
         {
-            return _context.Eventos
-                 .Include(e => e.EventoRecorrentes)
-                 .Select(evento => new EventoDTO
-                 {
-                     Id = evento.Id,
-                     Nome = evento.Nome,
-                     HoraInicial = evento.HoraInicial,
-                     HoraFinal = evento.HoraFinal,
-                     EhDiaInteiro = evento.EhDiaInteiro,
-                     Data = evento.Data,
-                     TipoRecorrencia = evento.Recorrencia.ToString(),
-
-                     EventosRecorrentes = evento.EventoRecorrentes.Select(er => new EventoRecorrenteDTO
-                     {
-                         Id = er.Id,
-                         IdPai = er.IdPai,
-                         HoraInicial = er.HoraInicial,
-                         HoraFinal = er.HoraFinal,
-                         Data = er.Data
-                     }).ToList()
-
-                 }).ToList();
+            return _context.Eventos.ToList();
         }
 
-        public List<Evento> ObterTodosEntidade()
+        public List<Evento> ObterTodosEventosComRecorrencia()
         {
-            return _context.Eventos.Include(e => e.EventoRecorrentes).ToList();
+            return _context.Eventos.Include(e=> e.EventoRecorrentes).ToList();
         }
 
         public void Salvar(Evento evento)
