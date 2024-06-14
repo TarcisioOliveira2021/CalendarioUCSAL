@@ -1,7 +1,3 @@
-import 'package:event_calendar/controllers/event_controller.dart';
-import 'package:event_calendar/enums/recurrence_enum.dart';
-import 'package:event_calendar/models/event_model.dart';
-import 'package:event_calendar/models/recurrent_event_model.dart';
 import 'package:event_calendar/ui/styles/colors.dart';
 import 'package:event_calendar/ui/widgets/containers/day_schedule_container.dart';
 import 'package:event_calendar/ui/widgets/containers/event_container.dart';
@@ -11,8 +7,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 
 import '../../styles/texts.dart';
-import '../month_schedule.dart';
-import 'dart:collection';
 
 const months = {
   1: 'Janeiro',
@@ -39,50 +33,6 @@ const weekDays = {
   6: 'Sabado',
 };
 
-// void teste(Map<int, List> eventsInDays, List<EventModel> events) {
-//   for (var event in events) {
-//     eventsInDays[event.date.day]?.add(event);
-//     if (event.recurrence == Recurrence.diariamente.label ||
-//         event.recurrence == Recurrence.semanalmente.label) {
-//       for (var current in event.recurrentEvents!) {
-//         eventsInDays[current.date.day]?.add(current);
-//       }
-//     }
-//   }
-//   // return eventsInDays;
-// }
-
-// void gen() {
-//   var x = {};
-//   for (var i = 1;
-//       i <= DateUtils.getDaysInMonth(2024, DateTime.now().month);
-//       i++) {
-//     x[i] = [];
-//   }
-//   print(x);
-// }
-
-// var weekQueue = Queue<String>.from(weekDays.values);
-
-// List<String> weekOrderedByOffset(int offset) {
-//   for (var i = 0; i < offset; i++) {
-//     var currentFirst = weekQueue.first;
-//     weekQueue.removeFirst();
-//     weekQueue.add(currentFirst);
-//   }
-//   return weekQueue.toList();
-// }
-
-// List<EventModel> getCurrentMonthEvents(List<EventModel> allEvents) {
-//   List<EventModel> currentMonthEvents = [];
-//   for (var event in allEvents) {
-//     if (event.date.month == DateTime.now().month) {
-//       currentMonthEvents.add(event);
-//     }
-//   }
-//   return currentMonthEvents;
-// }
-
 Map<int, List<Widget>> mapSchedule(
     List<dynamic> events, DateTime currentDateTime) {
   Map<int, List<Widget>> scheduleMap = {};
@@ -94,14 +44,18 @@ Map<int, List<Widget>> mapSchedule(
         scheduleMap[(evt.date as DateTime).day]?.add(
           EventContainer(
             title: evt.name,
-            description: evt.initialHour ?? "DIA INTEIRO",
+            description: evt.initialHour != '' && evt.finalHour != ''
+                ? "De ${evt.initialHour} a ${evt.finalHour}"
+                : "Dia inteiro",
           ),
         );
       } else {
         scheduleMap[(evt.date as DateTime).day]?.add(
           EventContainer(
             title: evt.name,
-            description: evt.initialHour ?? "DIA INTEIRO",
+            description: evt.initialHour != null && evt.finalHour != null
+                ? "De ${evt.initialHour} a ${evt.finalHour}"
+                : "Dia inteiro",
           ),
         );
       }
@@ -152,25 +106,26 @@ class _MonthContainerState extends State<MonthContainer> {
               initialSelection: selectedDate.month,
               controller: currentMonthController,
               dropdownMenuEntries: List.generate(
-                12,
+                12 - DateTime.now().month,
                 (index) => DropdownMenuEntry<int>(
-                  value: index + 1,
-                  label: "${months[index + 1]}",
+                  value: DateTime.now().month + index,
+                  label: "${months[DateTime.now().month + index]}",
                 ),
               ),
             ),
             const SizedBox(width: 16),
-            GestureDetector(
-              onTap: () => setState(() {
-                selectedDate = DateTime.utc(
-                  selectedDate.year - 1,
-                  selectedDate.month,
-                );
-              }),
-              child: const Icon(
-                Icons.arrow_back_ios_outlined,
+            if (selectedDate.year != DateTime.now().year)
+              GestureDetector(
+                onTap: () => setState(() {
+                  selectedDate = DateTime.utc(
+                    selectedDate.year - 1,
+                    selectedDate.month,
+                  );
+                }),
+                child: const Icon(
+                  Icons.arrow_back_ios_outlined,
+                ),
               ),
-            ),
             Padding(
               padding: EdgeInsets.all(0),
               child: Text("${selectedDate.year}", style: headlineSmall),

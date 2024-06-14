@@ -2,8 +2,6 @@ import 'package:event_calendar/controllers/event_controller.dart';
 import 'package:event_calendar/ui/styles/colors.dart';
 import 'package:event_calendar/ui/styles/texts.dart';
 import 'package:event_calendar/ui/widgets/main_text_field.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import '../../enums/recurrence_enum.dart';
 import 'package:flutter/material.dart';

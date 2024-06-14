@@ -8,8 +8,6 @@ class EventModel {
   bool entireDay;
   String? initialHour;
   String? finalHour;
-  // DateTime? initialHour;
-  // DateTime? finalHour;
   DateTime date;
   String recurrence;
   List<RecurrentEventModel>? recurrentEvents;
@@ -31,8 +29,6 @@ class EventModel {
       'entireDay': entireDay,
       'initialHour': initialHour,
       'finalHour': finalHour,
-      // 'initialHour': initialHour?.millisecondsSinceEpoch,
-      // 'finalHour': finalHour?.millisecondsSinceEpoch,
       'date': date.millisecondsSinceEpoch,
       'recurrence': recurrence,
       'recurrentEvents': recurrentEvents?.map((x) => x?.toMap()).toList(),
@@ -47,11 +43,6 @@ class EventModel {
       initialHour:
           map['horaInicial'] != null ? map['horaInicial'] as String : null,
       finalHour: map['horaFinal'] != null ? map['horaFinal'] as String : null,
-      // initialHour: map['horaInicial'] != null
-      //     ? DateTime.parse(map['horaInicial'])
-      //     : null,
-      // finalHour:
-      //     map['horaFinal'] != null ? DateTime.parse(map['horaFinal']) : null,
       date: DateTime.parse(map['data']),
       recurrence: map['tipoRecorrencia'] as String,
       recurrentEvents: map['eventosRecorrentes'] != null

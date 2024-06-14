@@ -1,13 +1,8 @@
 import 'package:event_calendar/controllers/event_controller.dart';
 import 'package:event_calendar/models/event_model.dart';
-import 'package:event_calendar/ui/styles/colors.dart';
-import 'package:event_calendar/ui/styles/texts.dart';
 import 'package:event_calendar/ui/widgets/containers/background_container.dart';
-import 'package:event_calendar/ui/widgets/containers/day_schedule_container.dart';
 import 'package:event_calendar/ui/widgets/containers/month_container.dart';
 import 'package:event_calendar/ui/widgets/events_tab.dart';
-import 'package:event_calendar/ui/widgets/containers/event_container.dart';
-import 'package:event_calendar/ui/widgets/month_schedule.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -16,46 +11,6 @@ void main() {
     (_) => runApp(const MainApp()),
   );
 }
-
-var eventamount = 0;
-
-// void eventCounting(List<EventModel> events) {
-//   for (var event in events) {
-//     eventamount += 1;
-//     if (event.recurrentEvents != null && event.recurrentEvents!.isNotEmpty) {
-//       for (var recurrent in event.recurrentEvents!) {
-//         eventamount += 1;
-//       }
-//     }
-//   }
-//   print("A: $eventamount");
-// }
-
-// List<EventModel> getCurrentMonthEvents(List<EventModel> allEvents) {
-//   List<EventModel> currentMonthEvents = [];
-//   for (var event in allEvents) {
-//     if (event.date.month == DateTime.now().month) {
-//       currentMonthEvents.add(event);
-//     }
-//   }
-//   return currentMonthEvents;
-// }
-
-// TODO:
-// const monthEvents = {
-//   15: [evt],
-// };
-
-// void teste(List<EventModel> events) {
-//   for (var evt in events) {
-//     if(monthEvents[evt.date.day] != null) monthEvents[evt.date.day].add(value)
-//     else monthEvents[evt.date.day] = [evt];
-//   }
-// }
-
-// [evtpai1, evtpai2, evtpai3]
-
-// [evtpai, evtpai.filho[0], evtpai.filho[1], evtpai.filho[2], evtpai2]
 
 class MainApp extends StatefulWidget {
   const MainApp({super.key});

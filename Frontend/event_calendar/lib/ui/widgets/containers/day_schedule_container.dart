@@ -1,4 +1,3 @@
-import 'package:event_calendar/ui/styles/colors.dart';
 import 'package:event_calendar/ui/styles/texts.dart';
 import 'package:flutter/material.dart';
 
