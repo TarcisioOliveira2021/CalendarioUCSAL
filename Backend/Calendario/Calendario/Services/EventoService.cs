@@ -57,19 +57,19 @@ namespace Calendario.Services
             switch (evento.Recorrencia)
             {
                 case Entities.Enums.TipoRecorrencia.DIARIAMENTE:
-                    SalvarEventoDiariamente(evento, dataAtual);
+                    SalvarEventoDiariamente(evento, evento.Data.Date);
                     break;
 
                 case Entities.Enums.TipoRecorrencia.SEMANALMENTE:
-                    SalvarEventoSemanalmente(evento, dataAtual);
+                    SalvarEventoSemanalmente(evento, evento.Data.Date);
                     break;
 
                 case Entities.Enums.TipoRecorrencia.MENSALMENTE:
-                    SalvaEventoMensalmente(evento, dataAtual);
+                    SalvaEventoMensalmente(evento, evento.Data.Date);
                     break;
 
                 case Entities.Enums.TipoRecorrencia.ANUALMENTE:
-                    SalvarEventoAnualmente(evento, dataAtual);
+                    SalvarEventoAnualmente(evento, evento.Data.Date);
                     break;
 
                 default:
