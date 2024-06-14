@@ -1,21 +1,77 @@
-import 'package:event_calendar/styles/colors.dart';
-import 'package:event_calendar/styles/texts.dart';
-import 'package:event_calendar/widgets/background_container.dart';
-import 'package:event_calendar/widgets/day_schedule_container.dart';
-import 'package:event_calendar/widgets/events_tab.dart';
-import 'package:event_calendar/widgets/event_container.dart';
-import 'package:event_calendar/widgets/month_schedule.dart';
+import 'package:event_calendar/controllers/event_controller.dart';
+import 'package:event_calendar/models/event_model.dart';
+import 'package:event_calendar/ui/styles/colors.dart';
+import 'package:event_calendar/ui/styles/texts.dart';
+import 'package:event_calendar/ui/widgets/containers/background_container.dart';
+import 'package:event_calendar/ui/widgets/containers/day_schedule_container.dart';
+import 'package:event_calendar/ui/widgets/containers/month_container.dart';
+import 'package:event_calendar/ui/widgets/events_tab.dart';
+import 'package:event_calendar/ui/widgets/containers/event_container.dart';
+import 'package:event_calendar/ui/widgets/month_schedule.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
-  runApp(const MainApp());
+  initializeDateFormatting('pt_BR', null).then(
+    (_) => runApp(const MainApp()),
+  );
 }
 
-class MainApp extends StatelessWidget {
+var eventamount = 0;
+
+// void eventCounting(List<EventModel> events) {
+//   for (var event in events) {
+//     eventamount += 1;
+//     if (event.recurrentEvents != null && event.recurrentEvents!.isNotEmpty) {
+//       for (var recurrent in event.recurrentEvents!) {
+//         eventamount += 1;
+//       }
+//     }
+//   }
+//   print("A: $eventamount");
+// }
+
+// List<EventModel> getCurrentMonthEvents(List<EventModel> allEvents) {
+//   List<EventModel> currentMonthEvents = [];
+//   for (var event in allEvents) {
+//     if (event.date.month == DateTime.now().month) {
+//       currentMonthEvents.add(event);
+//     }
+//   }
+//   return currentMonthEvents;
+// }
+
+// TODO:
+// const monthEvents = {
+//   15: [evt],
+// };
+
+// void teste(List<EventModel> events) {
+//   for (var evt in events) {
+//     if(monthEvents[evt.date.day] != null) monthEvents[evt.date.day].add(value)
+//     else monthEvents[evt.date.day] = [evt];
+//   }
+// }
+
+// [evtpai1, evtpai2, evtpai3]
+
+// [evtpai, evtpai.filho[0], evtpai.filho[1], evtpai.filho[2], evtpai2]
+
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
 
   @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  late Future<List<EventModel>> parentEvents;
+  late Future<List<dynamic>> flatennedEvents;
+
+  @override
   Widget build(BuildContext context) {
+    parentEvents = fetchEvents();
+    flatennedEvents = fetchFlatEvents();
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.white,
@@ -24,65 +80,42 @@ class MainApp extends StatelessWidget {
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 64),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const EventsTab(),
+              FutureBuilder(
+                  future: parentEvents,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return BackgroundContainer(
+                        child: SingleChildScrollView(
+                          child: EventsTab(
+                            events: snapshot.data ?? [],
+                            eventsChangedCallback: () {
+                              setState(() {});
+                            },
+                          ),
+                        ),
+                      );
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
+                  }),
               const SizedBox(width: 24),
-              Container(
-                decoration: BoxDecoration(
-                  color: lightGray,
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-                child: const SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Abril, 2024",
-                        style: headlineSmall,
+              FutureBuilder(
+                future: flatennedEvents,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return BackgroundContainer(
+                      child: SingleChildScrollView(
+                        child: MonthContainer(
+                          currentMonthEvents: snapshot.data ?? [],
+                        ),
                       ),
-                      SizedBox(height: 23),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 45),
-                            child: Text("Segunda", style: titleSmall),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 45),
-                            child: Text("Terça", style: titleSmall),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 45),
-                            child: Text("Quarta", style: titleSmall),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 45),
-                            child: Text("Quinta", style: titleSmall),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 45),
-                            child: Text("Sexta", style: titleSmall),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 45),
-                            child: Text("Sabado", style: titleSmall),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 45),
-                            child: Text("Domingo", style: titleSmall),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 9),
-                      MonthSchedule(),
-                    ],
-                  ),
-                ),
+                    );
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                },
               )
             ],
           ),

@@ -1,23 +1,29 @@
-import 'package:event_calendar/styles/colors.dart';
-import 'package:event_calendar/styles/texts.dart';
+import 'package:event_calendar/ui/styles/colors.dart';
+import 'package:event_calendar/ui/styles/texts.dart';
 import 'package:flutter/material.dart';
 
 class DayScheduleContainer extends StatelessWidget {
   final List<Widget> events;
-  final int weekDayIndex;
+  final int index;
+  final bool isFodderDay;
+  final Color backgroundColor;
   const DayScheduleContainer(
-      {super.key, this.events = const [], required this.weekDayIndex});
+      {super.key,
+      this.events = const [],
+      required this.index,
+      required this.backgroundColor,
+      required this.isFodderDay});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 132,
+      constraints: const BoxConstraints(minHeight: 100, minWidth: 132),
       padding: const EdgeInsets.symmetric(
         vertical: 12,
         horizontal: 8,
       ),
       decoration: BoxDecoration(
-        color: weekDayIndex % 2 == 0 ? gray : Colors.white,
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -25,13 +31,15 @@ class DayScheduleContainer extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
-            "$weekDayIndex",
+            "$index",
             style: titleMedium,
           ),
-          if (events.isNotEmpty)
-            ...events
-          else
-            const SizedBox(height: 56, width: 116),
+          if (isFodderDay)
+            const Icon(
+              Icons.close_rounded,
+              color: Colors.red,
+            ),
+          if (events.isNotEmpty) ...events
         ],
       ),
     );
