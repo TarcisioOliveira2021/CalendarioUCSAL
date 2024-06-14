@@ -1,5 +1,5 @@
-import 'package:event_calendar/ui/styles/colors.dart';
-import 'package:event_calendar/ui/styles/texts.dart';
+import 'package:event_calendar/styles/colors.dart';
+import 'package:event_calendar/styles/texts.dart';
 import 'package:flutter/material.dart';
 
 class EventContainer extends StatelessWidget {

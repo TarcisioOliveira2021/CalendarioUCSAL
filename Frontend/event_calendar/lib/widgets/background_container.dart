@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../styles/colors.dart';
+import '../styles/colors.dart';
 
 class BackgroundContainer extends StatelessWidget {
   final Widget child;
@@ -10,10 +10,7 @@ class BackgroundContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: lightGray,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+          color: lightGray, borderRadius: BorderRadius.circular(24)),
       child: child,
     );
   }
