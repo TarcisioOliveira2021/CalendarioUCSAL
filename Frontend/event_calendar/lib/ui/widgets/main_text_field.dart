@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 
 class MainTextField extends StatelessWidget {
-  const MainTextField({super.key});
+  final TextEditingController controller;
+  final String? hintText;
+  MainTextField({super.key, required this.controller, this.hintText});
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    return TextField(
+      controller: controller,
+      keyboardType: TextInputType.number,
       decoration: InputDecoration(
+        hintText: hintText,
         filled: true,
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(
