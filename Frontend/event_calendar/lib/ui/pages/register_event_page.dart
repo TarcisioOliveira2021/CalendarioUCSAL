@@ -118,33 +118,65 @@ class _RegisterEventPageState extends State<RegisterEventPage> {
                         "data": DateTime.parse(dataController.text)
                             .toIso8601String(),
                       };
-                      sendEvent(newEvent);
-                      showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                                surfaceTintColor: gray,
-                                title: const Text("Evento adicionado"),
-                                actions: [
-                                  GestureDetector(
-                                    onTap: () => Navigator.pop(context),
-                                    child: Center(
-                                        child: Container(
-                                      width: 65,
-                                      alignment: Alignment.center,
-                                      padding: const EdgeInsets.all(4),
-                                      decoration: BoxDecoration(
-                                        color: navyBlue,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Text(
-                                        "Entendi",
-                                        style: titleSmall.copyWith(
-                                            color: Colors.white),
-                                      ),
-                                    )),
-                                  ),
-                                ],
-                              ));
+                      sendEvent(newEvent)
+                          .then(
+                        (_) => showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  surfaceTintColor: gray,
+                                  title: const Text("Evento adicionado"),
+                                  actions: [
+                                    GestureDetector(
+                                      onTap: () => Navigator.pop(context),
+                                      child: Center(
+                                          child: Container(
+                                        width: 65,
+                                        alignment: Alignment.center,
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: navyBlue,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          "Entendi",
+                                          style: titleSmall.copyWith(
+                                              color: Colors.white),
+                                        ),
+                                      )),
+                                    ),
+                                  ],
+                                )),
+                      )
+                          .catchError((onError) {
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  surfaceTintColor: gray,
+                                  title: const Text("Ocorreu um erro!"),
+                                  actions: [
+                                    GestureDetector(
+                                      onTap: () => Navigator.pop(context),
+                                      child: Center(
+                                          child: Container(
+                                        width: 65,
+                                        alignment: Alignment.center,
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          "Entendi",
+                                          style: titleSmall.copyWith(
+                                              color: Colors.white),
+                                        ),
+                                      )),
+                                    ),
+                                  ],
+                                ));
+                      });
                     },
                     child: Container(
                       alignment: Alignment.center,
